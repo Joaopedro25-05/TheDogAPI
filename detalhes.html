@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes da Raça</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+    <div class="background">
+        <div class="content">
+            <h1>Imagem da Raça</h1>
+            <h2 id="breedName"></h2> <!-- Nome da raça -->
+            <div id="breedImage"></div>
+            <p id="breedDescription"></p>
+            <a href="index.html">Voltar</a> <!-- Adicione um botão para voltar à página anterior -->
+        </div>
+    </div>
+
+    <script>
+        const apiKey = 'live_bUkav3C2NA5KPkosf96QBFK47BF3Af1WaRHKlsw6NucN5o1ZxdA45hcGSJE8HzNm';
+        const breedId = new URLSearchParams(window.location.search).get('breedId');
+        const breedDescription = document.getElementById('breedDescription');
+        const breedName = document.getElementById('breedName');
+        const breedImage = document.getElementById('breedImage');
+
+        function getBreedDetails(breedId) {
+            fetch(`https://api.thedogapi.com/v1/breeds/${breedId}`, {
+                headers: {
+                    'x-api-key': apiKey,
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data) {
+                    const breedDetails = data;
+                    const breedDescriptionText = breedDetails.description;
+                    const breedNameText = breedDetails.name;
+                    breedDescription.textContent = breedDescriptionText;
+                    breedName.textContent = breedNameText;
+                }
+            })
+            .catch(error => console.error(error));
+        }
+
+        function getBreedImage(breedId) {
+            fetch(`https://api.thedogapi.com/v1/images/search?breed_ids=${breedId}`, {
+                headers: {
+                    'x-api-key': apiKey,
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.length > 0) {
+                    const imageUrl = data[0].url;
+                    breedImage.innerHTML = `<img id="imagem_cachorro" src="${imageUrl}" alt="Imagem da Raça">`;
+                }
+            })
+            .catch(error => console.error(error));
+        }
+
+        getBreedDetails(breedId);
+        getBreedImage(breedId);
+    </script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raças de Cães</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+    <div class="background">
+        <div class="content">
+            <h1>The dog API</h1>
+            <p>Encontre uma raça e veja uma foto da mesma</p>
+            <select id="dogBreedsSelect">
+                <option value="" disabled selected>Selecione uma raça</option>
+            </select>
+        </div>
+    </div>
+
+    <script>
+        const apiKey = 'live_bUkav3C2NA5KPkosf96QBFK47BF3Af1WaRHKlsw6NucN5o1ZxdA45hcGSJE8HzNm';
+        const dogBreedsSelect = document.getElementById('dogBreedsSelect');
+
+        function getDogBreeds() {
+            fetch('https://api.thedogapi.com/v1/breeds', {
+                headers: {
+                    'x-api-key': apiKey,
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(breed => {
+                    const option = document.createElement('option');
+                    option.value = breed.id;
+                    option.textContent = breed.name;
+                    dogBreedsSelect.appendChild(option);
+                });
+                dogBreedsSelect.addEventListener('change', () => {
+                    if (dogBreedsSelect.value) {
+                        window.location.href = `detalhes.html?breedId=${dogBreedsSelect.value}`;
+                    }
+                });
+            })
+            .catch(error => console.error(error));
+        }
+
+        getDogBreeds();
+    </script>
+</body>
+</html>
